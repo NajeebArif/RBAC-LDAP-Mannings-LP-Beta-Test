@@ -1,5 +1,6 @@
 package narif.mlp.rbacldap.services;
 
+import narif.mlp.rbacldap.model.User;
 import narif.mlp.rbacldap.repositories.UserJpaRepo;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +15,9 @@ public class UsersService {
 
     public Boolean isUserRegistered(String email) {
         return userJpaRepo.findByEmailId(email).isPresent();
+    }
+
+    public User createUser(User user) {
+        return null;
     }
 }

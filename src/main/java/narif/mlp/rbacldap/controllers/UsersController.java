@@ -17,7 +17,6 @@ public class UsersController {
         this.usersService = usersService;
     }
 
-
     @GetMapping
     public List<User> getAllUsers(){
         return Collections.singletonList(new User());
@@ -25,6 +24,6 @@ public class UsersController {
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return user;
+        return usersService.createUser(user);
     }
 }
