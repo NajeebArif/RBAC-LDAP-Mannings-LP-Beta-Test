@@ -192,6 +192,12 @@ public class UserDataValidatorTest {
     @Test
     @DisplayName("Should PASS all the constraint checks if all valid attributes are provided for user")
     void testValidUser(){
+        createValidUser();
+        final var constraintViolations = validator.validate(user);
+        assertThat(constraintViolations).isEmpty();
+    }
+
+    private void createValidUser() {
         user.setFirstName("John");
         user.setLastName("Doe");
         user.setAddress("123 Street, Alpha Beta.");
@@ -200,8 +206,6 @@ public class UserDataValidatorTest {
         user.setEmailId("John.Doe@email.com");
         user.setPassword("Ak@1jugpe3");
         user.setRole(Role.ADMIN);
-        final var constraintViolations = validator.validate(user);
-        assertThat(constraintViolations).isEmpty();
     }
 
     private Predicate<ConstraintViolation<User>> hasErrorMessage(String expectedMessage) {
