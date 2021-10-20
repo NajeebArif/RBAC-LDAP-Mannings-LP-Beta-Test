@@ -22,6 +22,7 @@ public class UsersService {
         if(isUserRegistered(user.getEmailId())){
             throw new UserAlreadyRegisteredException();
         }
-        return null;
+        final var savedUser = userJpaRepo.save(user);
+        return savedUser;
     }
 }

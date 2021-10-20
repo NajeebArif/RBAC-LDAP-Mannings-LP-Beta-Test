@@ -1,6 +1,7 @@
 package narif.mlp.rbacldap.services;
 
 import narif.mlp.rbacldap.exceptions.UserAlreadyRegisteredException;
+import narif.mlp.rbacldap.model.Role;
 import narif.mlp.rbacldap.model.User;
 import narif.mlp.rbacldap.repositories.UserJpaRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.mockito.quality.Strictness;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DisplayName("User Service Specs:")
@@ -65,6 +67,29 @@ class UsersServiceTest {
         user.setEmailId(JOHN_EMAIL_COM);
         assertThatCode(()->usersService.createUser(user)).isInstanceOf(UserAlreadyRegisteredException.class)
                 .hasMessage(UserAlreadyRegisteredException.genericMessage);
+    }
+
+    @Test
+    @DisplayName("Should return the saved entity after saving via repository")
+    void testRepoSave(){
+        final var validUser = createValidUser();
+        when(userJpaRepoMock.save(validUser)).thenReturn(validUser);
+        final var user = usersService.createUser(validUser);
+        assertThat(user).isNotNull().isEqualTo(validUser);
+        verify(userJpaRepoMock).save(validUser);
+    }
+
+    private User createValidUser() {
+        final var user = new User();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setAddress("123 Street, Alpha Beta.");
+        user.setPhone("123-456-6789");
+        user.setAge(24);
+        user.setEmailId("John.Doe@email.com");
+        user.setPassword("Ak@1jugpe3");
+        user.setRole(Role.ADMIN);
+        return user;
     }
 
 }
