@@ -2,9 +2,15 @@ package narif.mlp.rbacldap.model;
 
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 @Data
+@Entity
+@Table(name = "USERS")
 public class User {
 
+    private Integer id;
     private String firstName;
     private String lastName;
     private String emailId;
