@@ -1,5 +1,6 @@
 package narif.mlp.rbacldap.services;
 
+import narif.mlp.rbacldap.exceptions.UserAlreadyRegisteredException;
 import narif.mlp.rbacldap.model.User;
 import narif.mlp.rbacldap.repositories.UserJpaRepo;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,14 @@ public class UsersService {
         this.userJpaRepo = userJpaRepo;
     }
 
-    public Boolean isUserRegistered(String email) {
+    Boolean isUserRegistered(String email) {
         return userJpaRepo.findByEmailId(email).isPresent();
     }
 
     public User createUser(User user) {
+        if(isUserRegistered(user.getEmailId())){
+            throw new UserAlreadyRegisteredException();
+        }
         return null;
     }
 }
