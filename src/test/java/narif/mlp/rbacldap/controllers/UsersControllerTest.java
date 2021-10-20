@@ -1,20 +1,28 @@
 package narif.mlp.rbacldap.controllers;
 
 import narif.mlp.rbacldap.model.User;
+import narif.mlp.rbacldap.services.UsersService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Users Controller Specs:")
+@ExtendWith(MockitoExtension.class)
 class UsersControllerTest {
+
+    @Mock
+    UsersService usersServiceMock;
 
     UsersController usersController;
 
     @BeforeEach
     public void init(){
-        usersController = new UsersController();
+        usersController = new UsersController(usersServiceMock);
     }
 
     @Test
