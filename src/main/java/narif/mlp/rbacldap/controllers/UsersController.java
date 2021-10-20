@@ -4,6 +4,7 @@ import narif.mlp.rbacldap.model.User;
 import narif.mlp.rbacldap.services.UsersService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class UsersController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@RequestBody @Valid User user) {
         return usersService.createUser(user);
     }
 }
