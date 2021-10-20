@@ -1,9 +1,7 @@
 package narif.mlp.rbacldap.controllers;
 
 import narif.mlp.rbacldap.model.User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +12,11 @@ public class UsersController {
 
     @GetMapping
     public List<User> getAllUsers(){
-        return Collections.emptyList();
+        return Collections.singletonList(new User());
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return user;
     }
 }
