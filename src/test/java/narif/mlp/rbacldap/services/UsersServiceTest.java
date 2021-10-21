@@ -1,8 +1,10 @@
 package narif.mlp.rbacldap.services;
 
 import narif.mlp.rbacldap.exceptions.UserAlreadyRegisteredException;
+import narif.mlp.rbacldap.model.LdapUser;
 import narif.mlp.rbacldap.model.Role;
 import narif.mlp.rbacldap.model.User;
+import narif.mlp.rbacldap.repositories.LdapUserRepository;
 import narif.mlp.rbacldap.repositories.UserJpaRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,10 +14,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,12 +33,14 @@ class UsersServiceTest {
 
     @Mock
     UserJpaRepo userJpaRepoMock;
+    @Mock
+    LdapUserRepository ldapUserRepositoryMock;
 
     UsersService usersService;
 
     @BeforeEach
     public void init() {
-        usersService = new UsersService(userJpaRepoMock);
+        usersService = new UsersService(userJpaRepoMock, ldapUserRepositoryMock);
         when(userJpaRepoMock.findByEmailId(EMAIL_NOT_FOUNT)).thenReturn(Optional.empty());
         when(userJpaRepoMock.findByEmailId(JOHN_EMAIL_COM)).thenReturn(Optional.of(new User()));
     }
@@ -55,8 +61,9 @@ class UsersServiceTest {
     @Test
     @DisplayName("Should not throw exception while creating user if the user is not registered")
     void testCreateUser1() {
-        final var user = new User();
-        user.setEmailId(EMAIL_NOT_FOUNT);
+        final var user = createValidUser();
+        when(userJpaRepoMock.save(user)).thenReturn(user);
+
         assertThatCode(()->usersService.createUser(user)).doesNotThrowAnyException();
     }
 
@@ -75,8 +82,21 @@ class UsersServiceTest {
         final var validUser = createValidUser();
         when(userJpaRepoMock.save(validUser)).thenReturn(validUser);
         final var user = usersService.createUser(validUser);
-        assertThat(user).isNotNull().isEqualTo(validUser);
+        assertThat(user).isNotNull().matches(user1 -> user1.getEmailId().equals(validUser.getEmailId()));
         verify(userJpaRepoMock).save(validUser);
+    }
+
+    @Test
+    @DisplayName("Should call ldap repository save after saving to db.")
+    void testSaveToLdap(){
+        final var validUser = createValidUser();
+        when(userJpaRepoMock.save(validUser)).thenReturn(validUser);
+        final var ldapUser = validUser.getLdapUser();
+        when(ldapUserRepositoryMock.save(any(LdapUser.class))).thenReturn(ldapUser);
+        final var user = usersService.createUser(validUser);
+        assertThat(user).isNotNull().matches(user1 -> user1.getEmailId().equals(validUser.getEmailId()));
+        verify(userJpaRepoMock).save(validUser);
+        verify(ldapUserRepositoryMock).save(any(LdapUser.class));
     }
 
     private User createValidUser() {

@@ -38,4 +38,12 @@ public class User {
     @NotBlank
     private String address;
     private String tag;
+
+    public LdapUser getLdapUser(){
+        final var ldapUser = new LdapUser(this.emailId);
+        ldapUser.setPassword(this.password);
+        ldapUser.setFirstName(this.firstName);
+        ldapUser.setLastName(this.lastName);
+        return ldapUser;
+    }
 }
