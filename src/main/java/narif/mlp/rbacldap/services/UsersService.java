@@ -28,9 +28,13 @@ public class UsersService {
             throw new UserAlreadyRegisteredException();
         }
         final User savedUser = saveUserToDb(user);
+        saveUserToLdap(savedUser);
+        return savedUser;
+    }
+
+    private void saveUserToLdap(User savedUser) {
         final var ldapUser = savedUser.getLdapUser();
         ldapUserRepository.save(ldapUser);
-        return savedUser;
     }
 
     private User saveUserToDb(User user) {
