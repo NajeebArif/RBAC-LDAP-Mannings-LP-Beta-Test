@@ -40,7 +40,6 @@ public class UsersService {
     private User saveUserToDb(User user) {
         final var bCryptPasswordEncoder = new BCryptPasswordEncoder();
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        System.out.println(user);
         final var savedUser = userJpaRepo.save(user);
         return savedUser;
     }

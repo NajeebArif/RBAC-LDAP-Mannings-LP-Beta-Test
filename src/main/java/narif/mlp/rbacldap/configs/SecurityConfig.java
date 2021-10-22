@@ -14,15 +14,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-//                .mvcMatchers(HttpMethod.POST, "/users").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/v1/users").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .httpBasic()
-        .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .sessionFixation().migrateSession().and().csrf().disable();
+                .and()
+                .sessionManagement()
+                .maximumSessions(1).maxSessionsPreventsLogin(true).and()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and().csrf().disable();
     }
 
     @Override
