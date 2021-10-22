@@ -7,12 +7,11 @@ import org.springframework.ldap.odm.annotations.Entry;
 import org.springframework.ldap.odm.annotations.Id;
 import org.springframework.ldap.odm.annotations.Transient;
 import org.springframework.ldap.support.LdapNameBuilder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.naming.Name;
 import javax.naming.ldap.LdapName;
 
-@Entry(base = "ou=people",objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
+@Entry(base = LdapUser.BASE,objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
 @Data
 public final class LdapUser implements Persistable {
 

@@ -21,7 +21,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
             return false;
 
         PasswordValidator validator = new PasswordValidator(Arrays.asList(
-                new LengthRule(8, 16),
+                new LengthRule(8, 1000),
                 new UppercaseCharacterRule(1),
                 new LowercaseCharacterRule(1),
                 new DigitCharacterRule(1),

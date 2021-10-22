@@ -1,5 +1,6 @@
 package narif.mlp.rbacldap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import narif.mlp.rbacldap.model.validators.ValidPassword;
 import org.hibernate.validator.constraints.Range;
@@ -33,12 +34,14 @@ public class User {
     @NotNull
     private Role role;
     @ValidPassword
+    @Column(length = 1000)
     private String password;
     private String managerName;
     @NotBlank
     private String address;
     private String tag;
 
+    @JsonIgnore
     public LdapUser getLdapUser(){
         final var ldapUser = new LdapUser(this.emailId);
         ldapUser.setPassword(this.password);
