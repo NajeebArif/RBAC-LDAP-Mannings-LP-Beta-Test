@@ -27,4 +27,9 @@ public class Leave {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void addUser(User user){
+        this.user = user;
+        user.getLeaves().add(this);
+    }
 }

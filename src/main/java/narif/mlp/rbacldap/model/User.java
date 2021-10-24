@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -47,7 +48,7 @@ public class User {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Leave> leaves;
+    private List<Leave> leaves = new ArrayList<>();
 
     @JsonIgnore
     public LdapUser getLdapUser(){
