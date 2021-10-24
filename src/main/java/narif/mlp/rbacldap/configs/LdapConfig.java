@@ -8,7 +8,7 @@ import org.springframework.ldap.core.support.LdapContextSource;
 
 import static narif.mlp.rbacldap.model.LdapUser.BASE;
 
-//@Configuration
+@Configuration
 public class LdapConfig {
 
     @Bean

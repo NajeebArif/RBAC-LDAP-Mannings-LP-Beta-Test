@@ -24,5 +24,7 @@ public class Leave {
     private String reason;
     private String comment;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }
