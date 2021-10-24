@@ -1,6 +1,6 @@
 package narif.mlp.rbacldap.utils;
 
-import narif.mlp.rbacldap.model.Role;
+import narif.mlp.rbacldap.model.enums.Role;
 import narif.mlp.rbacldap.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

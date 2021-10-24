@@ -2,7 +2,7 @@ package narif.mlp.rbacldap.services;
 
 import narif.mlp.rbacldap.exceptions.UserAlreadyRegisteredException;
 import narif.mlp.rbacldap.model.LdapUser;
-import narif.mlp.rbacldap.model.Role;
+import narif.mlp.rbacldap.model.enums.Role;
 import narif.mlp.rbacldap.model.User;
 import narif.mlp.rbacldap.repositories.LdapUserRepository;
 import narif.mlp.rbacldap.repositories.UserJpaRepo;
@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 

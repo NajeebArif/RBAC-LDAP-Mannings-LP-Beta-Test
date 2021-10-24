@@ -2,6 +2,7 @@ package narif.mlp.rbacldap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import narif.mlp.rbacldap.model.enums.Role;
 import narif.mlp.rbacldap.model.validators.ValidPassword;
 import org.hibernate.validator.constraints.Range;
 
