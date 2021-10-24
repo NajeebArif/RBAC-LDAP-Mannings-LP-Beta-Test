@@ -2,14 +2,17 @@ package narif.mlp.rbacldap.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import narif.mlp.rbacldap.model.enums.Role;
 import narif.mlp.rbacldap.model.validators.ValidPassword;
 import org.hibernate.validator.constraints.Range;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Entity
@@ -41,6 +44,10 @@ public class User {
     @NotBlank
     private String address;
     private String tag;
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Leave> leaves;
 
     @JsonIgnore
     public LdapUser getLdapUser(){
