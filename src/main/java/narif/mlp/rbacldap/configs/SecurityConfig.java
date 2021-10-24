@@ -2,10 +2,12 @@ package narif.mlp.rbacldap.configs;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -25,7 +27,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .maximumSessions(1).maxSessionsPreventsLogin(true).and()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .and().csrf().disable();
+                .and().logout(configureLogoutHandler()).csrf().disable();
+    }
+
+    private Customizer<LogoutConfigurer<HttpSecurity>> configureLogoutHandler() {
+        return httpSecurityLogoutConfigurer -> {
+            httpSecurityLogoutConfigurer.clearAuthentication(true);
+            httpSecurityLogoutConfigurer.invalidateHttpSession(true);
+            httpSecurityLogoutConfigurer.logoutUrl("/logout");
+        };
     }
 
     @Override
