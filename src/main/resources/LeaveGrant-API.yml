@@ -1,0 +1,447 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Leave Granting API
+  license:
+    name: MANNING
+servers:
+  - url: http://leavegrant.apisecurity.liveproject.manning.com/v1
+paths:
+  /users:
+    get:
+      summary: List all Users
+      operationId: listUsers
+      tags:
+        - users
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A paged array of users
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: create a User
+      operationId: createUser
+      tags:
+        - users
+      requestBody:
+        description: Send the User Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Null response
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{userId}:
+    get:
+      summary: Info for a specific user
+      operationId: showUserById
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{userId}/photos/:
+    post:
+      summary: Upload Photo of the User
+      operationId: uploadPhotoByID
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to which photo is being uploaded
+          schema:
+            type: string
+      requestBody:
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /leaves:
+    get:
+      summary: List all leaves
+      operationId: listLeaves
+      tags:
+        - leaves
+      parameters:
+        - name: status
+          in: query
+          description: status of the leave REQUESTED,APPROVED,DENIED
+          required: false
+          schema:
+            type: string
+            enum: [REQUESTED,APPROVED,DENIED]
+        - name: reportee
+          in: query
+          description: if true returns leaves of reportees by name for approval
+          required: false
+          schema:
+            type: string
+            description: retrieve reportee leave requests by emailId
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A paged array of leaves
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Leaves"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Request a leave
+      operationId: requestLeave
+      tags:
+        - leaves
+      requestBody:
+        description: Send the Leave Object
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Leave'
+      responses:
+        '201':
+          description: Null response
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /leaves/{leaveId}:
+    get:
+      summary: Info for a specific leave
+      operationId: showLeaveById
+      tags:
+        - leaves
+      parameters:
+        - name: leaveId
+          in: path
+          required: true
+          description: The id of the leave to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Leave"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /leaves/{leaveId}/approve:
+    post:
+      summary: Approve a leave
+      operationId: approveLeaves
+      tags:
+        - leaves
+      parameters:
+        - name: leaveId
+          in: path
+          required: true
+          description: The id of the leave to retrieve
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Approval response
+          content:
+            text/plain:
+              schema:
+                type: boolean
+                example: true for approved or false for deny of leave
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /login:
+    post:
+      summary: Login User
+      operationId: login
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                emailId:          # <!--- form field name
+                  type: string
+                password:    # <!--- form field name
+                  type: string
+              required:
+                - emailId
+                - password
+      responses:
+        '200':
+          description: Login response
+          content:
+            text/plain:
+              schema:
+                type: boolean
+                example: true for User Login success.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /logout:
+    post:
+      summary: User Logout flow
+      operationId: logout
+      tags:
+        - users
+      responses:
+        '200':
+          description: Logout response
+          content:
+            text/plain:
+              schema:
+                type: boolean
+                example: true for User Logout success.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /changePassword:
+    post:
+      summary: Change Password Flow
+      operationId: changePassword
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                oldPassword: # <!--- form field name
+                  type: string
+                newPassword: # <!--- form field name
+                  type: string
+              required:
+                - oldPassword
+                - newPassword
+      responses:
+        '200':
+          description: Change Password response
+          content:
+            text/plain:
+              schema:
+                type: boolean
+                example: true for User Password Change success.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  securitySchemes:
+    basicAuth:     # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: string
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - phone
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        emailId:
+          type: string
+        age:
+          type: integer
+          format: int64
+        phone:
+          type: string
+        role:
+          type: string
+          description: Manager or Reportee role
+          enum: [MGR,REPORTEE,ADMIN]
+        password:
+          type: string
+        managerName:
+          type: string
+          description: Name of the Manager to whom current User reports to
+        address:
+          type: string
+        tag:
+          type: string
+    Leave:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+          description: Type of Leave , Paid Leave or Sick Leave or Leave of Absence
+          enum: [SICK_LEAVE,PAID_LEAVE,LOA]
+        status:
+          type: string
+          enum: [REQUESTED,APPROVED,DENIED]
+        days:
+          type: integer
+          format: int64
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        reason:
+          type: string
+        comment:
+          type: string
+          description: Approver Comments
+    Leaves:
+      type: array
+      items:
+        $ref: "#/components/schemas/Leave"
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+security:
+  - basicAuth: []
