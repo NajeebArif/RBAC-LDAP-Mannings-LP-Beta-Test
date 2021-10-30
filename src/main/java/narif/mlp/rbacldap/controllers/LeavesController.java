@@ -31,7 +31,7 @@ public class LeavesController {
         return leaveService.createLeave(leave);
     }
 
-    @GetMapping
+    @GetMapping("listLeaves")
     public List<Leave> getAllMyLeaves(Authentication authentication) {
         final var name = authentication.getName();
         return userJpaRepo.findByEmailId(name)
